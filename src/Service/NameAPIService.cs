@@ -11,12 +11,12 @@ public class NameAPIService(HttpClient client)
 
   public async Task<string> GetPlayerName()
   {
-    Console.WriteLine("Waiting for a player to join the table...");
+    Console.WriteLine("\nWaiting for a player to join the table...");
     HttpResponseMessage response = await Client.GetAsync(nameAPIUrl);
     response.EnsureSuccessStatusCode();
     string responseData = await response.Content.ReadAsStringAsync();
     string playerName = ParseName(responseData);
-    Console.WriteLine($"Player {playerName} sat down.");
+    Console.WriteLine($"Player {Color.ColorizeString(playerName, "cyan")} sat down.");
     return playerName;
   }
 

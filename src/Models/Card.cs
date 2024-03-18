@@ -53,9 +53,25 @@ public class Card : ICard
     };
   }
 
+  public static string GetColoredSuit(string suit)
+  {
+    string spades = "\u2660";
+    string diamonds = "\u2666";
+    string hearts = "\u2665";
+    string clubs = "\u2663";
+    return suit switch
+    {
+      "Spades" => Color.ColorizeString(spades, "black"),
+      "Clubs" => Color.ColorizeString(clubs, "black"),
+      "Hearts" => Color.ColorizeString(hearts, "red"),
+      "Diamonds" => Color.ColorizeString(diamonds, "red"),
+      _ => suit
+    };
+  }
+
   override public string ToString()
   {
-    return $"{Rank} of {Suit} ({Score})";
+    return $"{Rank[0]}{GetColoredSuit(Suit)} ~ ({Score})";
   }
 }
 

@@ -20,27 +20,26 @@ public class Game : IGame
     Dealer dealer = new(deck, table);
     List<Player> players = Enumerable.Range(0, 5).Select(i => new Player(playerNames[i])).ToList();
 
-    Console.WriteLine("Introducing the players...");
+    Console.WriteLine(Color.ColorizeString("Introducing the players...", "cyan"));
     Thread.Sleep(500);
     IntroducePlayers(playerNames);
     Thread.Sleep(500);
-    Console.WriteLine("Distributing cards to players...");
+    Console.WriteLine(Color.ColorizeString("Distributing cards to players...", "cyan"));
     DistributeCardsToPlayers(dealer, players);
     Thread.Sleep(500);
-    Console.WriteLine("Putting cards on the table...");
+    Console.WriteLine(Color.ColorizeString("Putting cards on the table...", "cyan"));
     DistributeCardsOnTable(dealer, table);
     Thread.Sleep(500);
-    Console.WriteLine("finishing the game...");
+    Console.WriteLine(Color.ColorizeString("finishing the game...", "cyan"));
     FinishGame(dealer, players);
   }
 
   public void IntroducePlayers(List<string> playerNames)
   {
-    string str = "\n\n--------------------------";
-    str += "   \nPlayers in game";
+    string str = $"\n\n--------{Color.ColorizeString("Players in game", "cyan")}----------";
     foreach (var playerName in playerNames)
     {
-      str += $"\n-> {playerName}";
+      str += $"\n-> {Color.ColorizeString(playerName, "yellow")}";
     }
     str += "\n\n--------------------------";
 
@@ -68,9 +67,11 @@ public class Game : IGame
     table.ReceiveFlop(flopCards);
 
     // turn
+    dealer.BurnACard();
     table.ReceiveTurn(dealer.GetCardsFromDeck(1)[0]);
 
     //river
+    dealer.BurnACard();
     table.ReceiveRiver(dealer.GetCardsFromDeck(1)[0]);
     table.ListTableCards();
     Thread.Sleep(500);

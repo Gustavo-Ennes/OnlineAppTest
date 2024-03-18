@@ -28,7 +28,7 @@ public class Dealer : IDealer
   public void BurnACard()
   {
     Deck.DealCards();
-    Console.WriteLine("Dealer burned a card.");
+    Console.WriteLine($"Dealer {Color.ColorizeString("burned", "red")} a card.");
     Thread.Sleep(500);
   }
 
@@ -70,9 +70,9 @@ public class Dealer : IDealer
       Thread.Sleep(500);
       Console.WriteLine("\n\n--------------------------\n");
       Thread.Sleep(500);
-      Console.WriteLine("\n     W I N N E R");
+      Console.WriteLine($"     {Color.ColorizeString("W I N N E R", "red")}");
       Thread.Sleep(500);
-      Console.WriteLine($"\n{winner}");
+      Console.WriteLine($"{winner}");
     }
   }
 }

@@ -35,7 +35,7 @@ class Program
 
             if (keyInfo.Key == ConsoleKey.Escape)
             {
-                Console.WriteLine("\nExiting...");
+                Console.WriteLine("Exiting...");
                 return;
             }
             

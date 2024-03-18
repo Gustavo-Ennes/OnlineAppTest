@@ -166,12 +166,12 @@ public class Hand : IHand
 
   public override string ToString()
   {
-    string str = $"\nType: {type}\n";
+    string str = $"\nType: {Color.ColorizeString(type ?? "", "cyan")}\n";
     foreach (var card in Cards)
     {
       str += $"\n -> {card}";
     }
-    str += $"\n\t>Score: {Score}";
+    str += $"\n\t>{Color.ColorizeString("Score", "red")}: {Score}";
     str += $"\n\n----------------------\n";
     return str;
   }

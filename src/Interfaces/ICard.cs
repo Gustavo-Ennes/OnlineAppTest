@@ -8,4 +8,5 @@ public interface ICard{
   public static readonly List<string>? AllRanks;
   public static readonly List<string>? AllSuits;
   public int CalculateScore();
+  abstract static string GetColoredSuit(string suit);
 }
