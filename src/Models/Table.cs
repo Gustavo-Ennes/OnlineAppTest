@@ -14,6 +14,8 @@ public class Table
     {
       cards.Add(flopCard);
     }
+    Console.WriteLine("Table received the flop.");
+    Thread.Sleep(500);
   }
 
   public void ReceiveTurn(Card turnCard)
@@ -23,6 +25,8 @@ public class Table
       throw new InvalidOperationException("The flop comes before the turn.");
     }
     cards.Add(turnCard);
+    Console.WriteLine("Table received the turn.");
+    Thread.Sleep(500);
   }
 
   public void ReceiveRiver(Card riverCard)
@@ -32,17 +36,21 @@ public class Table
       throw new InvalidOperationException("The flop and turn comes before the river.");
     }
     cards.Add(riverCard);
+    Console.WriteLine("Table received the river.");
+    Thread.Sleep(500);
   }
 
   public void ListTableCards()
   {
-    string message = "";
-    if (cards.Count == 0) message = "No cards in the table.";
+    string message = "\n\n---- table cards ----";
+    if (cards.Count == 0) message += "No cards in the table.";
     if (cards.Count > 2)
-      message = $"\n\nFlop:\n -> {cards[0]}\n -> {cards[1]}\n -> {cards[2]}";
+      message += $"\n\nFlop:\n -> {cards[0]}\n -> {cards[1]}\n -> {cards[2]}";
     if (cards.Count > 3)
       message = string.Concat(message, $"\n\nTurn:\n -> {cards[3]}");
     if (cards.Count > 4) message = string.Concat(message, $"\n\nRiver:\n -> {cards[4]}");
+
+    message += "\n___________________\n\n";
 
     Console.WriteLine(message);
   }

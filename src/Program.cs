@@ -2,34 +2,48 @@
 
 class Program
 {
-    static void Main(string[] args)
+    private static readonly HttpClient httpClient = new();
+    private static NameAPIService? NameAPIService;
+    static async Task Main(string[] args)
     {
-        Game instance = Game.GetInstance();
-
-        Console.WriteLine("Texas Hold'em all-in app. Hit Enter to continue or ESC to exit.");
-
+        Game game = Game.GetInstance();
         ConsoleKeyInfo keyInfo;
+        NameAPIService = new(httpClient);
+
+        Console.WriteLine("~ Texas Hold'em 6-MAX all-in app ~");
+
+        Console.WriteLine("Tell me your name: ");
+        string? input = Console.ReadLine();
+        string mainPlayerName = string.IsNullOrWhiteSpace(input) ? "John Doe" : input;
 
         do
         {
-            keyInfo = Console.ReadKey(); // Read the key pressed by the user
+            List<string> playerNames = [mainPlayerName];
+            // fake name api calls
+            Task task = Task.Run(async () =>
+            {
+                List<string> otherPlayerNames = await NameAPIService.GetPlayerNames();
+                playerNames = [mainPlayerName, ..otherPlayerNames];
+            });
+            await task;
 
-            if (keyInfo.Key == ConsoleKey.Enter)
+            Console.WriteLine("\nContinuing...");
+            game.Execute(playerNames);
+
+            Console.WriteLine("\nYou can play again with Enter or ESC to exit.");
+            keyInfo = Console.ReadKey();
+
+            if (keyInfo.Key == ConsoleKey.Escape)
             {
-                Console.WriteLine("\nContinuing...");
-                instance.Execute();
-                Console.WriteLine("\nYou can play again with Enter or ESC to exit.");
-            }
-            else if (keyInfo.Key == ConsoleKey.Escape)
-            {
-                Console.WriteLine("\n Exiting...");
+                Console.WriteLine("\nExiting...");
                 return;
             }
-            else
+            
+            while(keyInfo.Key != ConsoleKey.Escape && keyInfo.Key != ConsoleKey.Enter)
             {
                 Console.WriteLine("\nInvalid key. Hit Enter to continue or ESC to exit");
+                keyInfo = Console.ReadKey();
             }
-
         } while (true);
     }
 }

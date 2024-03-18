@@ -3,6 +3,7 @@ namespace TexasHoldem;
 public class Player(string name) : IPlayer
 {
   public List<Card> cards = new(2);
+  public Hand? hand;
   public string Name { get; } = name;
 
   public void ReceiveCard(Card card)
@@ -14,12 +15,13 @@ public class Player(string name) : IPlayer
     cards.Add(card);
   }
 
-  public void ListCards()
+  override public string ToString()
   {
-    Console.WriteLine($"\n\nPlayer: {Name}\n");
-    foreach (var card in cards)
-    {
-      Console.WriteLine($"#{cards.IndexOf(card) + 1} ~ {card}");
-    }
+    string str = $"\n\n----- {Name} ------";
+    str += "\nCards:\n";
+    str += $"\n -> {cards[0]}\n -> {cards[1]}";
+    str += $"\n\n{hand}";
+
+    return str;
   }
 }

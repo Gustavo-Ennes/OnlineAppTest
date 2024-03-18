@@ -14,6 +14,8 @@ public class Dealer : IDealer
 
   public void DistributeACardTo(Player player)
   {
+    Console.WriteLine($"distributin one card to {player.Name}.");
+    Thread.Sleep(500);
     List<Card> dealedCards = Deck.DealCards();
     player.ReceiveCard(dealedCards[0]);
   }
@@ -26,6 +28,8 @@ public class Dealer : IDealer
   public void BurnACard()
   {
     Deck.DealCards();
+    Console.WriteLine("Dealer burned a card.");
+    Thread.Sleep(500);
   }
 
   public void LogPlayerGame(Player player)
@@ -44,32 +48,21 @@ public class Dealer : IDealer
     Thread.Sleep(500);
   }
 
-  // find the best hand by group(two pair,straight, flush)
-  // and then see if there's another player with such hand
-  // if not, it's the winner
-  // if yes, find the higher card by score
   public void FindAWinner(List<Player> players)
   {
     int? highestScore = 0;
     Player? winner = null;
-    Hand? bestHand = null;
 
     foreach (var player in players)
     {
-      string playerHandType = HandIdentifier.IdentifyPlayerHand(
-        Table.cards,
-        player.cards
-      );
-      Hand playerHand = new(Table.cards, player.cards);
+      player.hand = new(Table.cards, player.cards);
+      Console.WriteLine(player);
+      Thread.Sleep(500);
 
-      LogPlayerGame(player);
-      Console.WriteLine(playerHand);
-
-      if (playerHand.Score > highestScore)
+      if (player.hand.Score > highestScore)
       {
-        highestScore = playerHand.Score;
+        highestScore = player.hand.Score;
         winner = player;
-        bestHand = playerHand;
       }
     }
     if (winner != null)
@@ -79,9 +72,7 @@ public class Dealer : IDealer
       Thread.Sleep(500);
       Console.WriteLine("\n     W I N N E R");
       Thread.Sleep(500);
-      Console.WriteLine($"\n -> Player: {winner.Name}");
-      Thread.Sleep(500);
-      Console.WriteLine($"\n{bestHand}");
+      Console.WriteLine($"\n{winner}");
     }
   }
 }

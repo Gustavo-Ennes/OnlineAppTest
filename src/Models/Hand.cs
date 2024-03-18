@@ -116,7 +116,10 @@ public class Hand : IHand
           .. groupedByRankCards.Where(group => group.Count() == 2).ToList()[1],
         ];
       List<Card> otherCards =
-        AllCards.Where(card => card.Rank != twoPairCards[0].Rank).ToList();
+        AllCards.Where(
+          card =>
+            card.Rank != twoPairCards[0].Rank && card.Rank != twoPairCards[2].Rank
+        ).ToList();
       Card? highestCardOfOtherCards =
         otherCards.OrderByDescending(card => card.Score).FirstOrDefault();
 
@@ -163,8 +166,7 @@ public class Hand : IHand
 
   public override string ToString()
   {
-    string str = $"\n\n----------------------\n";
-    str += $"\nType: {type}\n";
+    string str = $"\nType: {type}\n";
     foreach (var card in Cards)
     {
       str += $"\n -> {card}";

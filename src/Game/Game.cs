@@ -13,13 +13,11 @@ public class Game : IGame
     return instance;
   }
 
-  public void Execute()
+  public void Execute(List<string> playerNames)
   {
     Deck deck = new();
     Table table = new();
     Dealer dealer = new(deck, table);
-    List<string> playerNames =
-      ["John Petrucci", "Steve Vai", "Mike Portnoy", "Joe Duplantier", "Mario Duplantier"];
     List<Player> players = Enumerable.Range(0, 5).Select(i => new Player(playerNames[i])).ToList();
 
     Console.WriteLine("Introducing the players...");
@@ -74,6 +72,8 @@ public class Game : IGame
 
     //river
     table.ReceiveRiver(dealer.GetCardsFromDeck(1)[0]);
+    table.ListTableCards();
+    Thread.Sleep(500);
   }
 
   public void FinishGame(Dealer dealer, List<Player> players)
