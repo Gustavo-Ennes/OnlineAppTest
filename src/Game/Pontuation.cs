@@ -117,7 +117,7 @@ public class Pontuation : IPontuation
 
   public static int CalculateStraight(Hand hand)
   {
-    hand.Cards.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
+    hand.Cards.Sort((card1, card2) => card2.Score.CompareTo(card1.Score));
     return HAND_ADDER["straight"] + hand.Cards[0].Score;
   }
 

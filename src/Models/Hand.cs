@@ -235,7 +235,7 @@ public class Hand : IHand
 
   public override string ToString()
   {
-    string str = $"\nType: {Color.ColorizeString(type ?? "", "cyan")}\n";
+    string str = $"\nType: {Color.ColorizeString(type ?? "", "cyan")}\nMade hand:\n";
     foreach (var card in Cards)
     {
       str += $"\n -> {card}";

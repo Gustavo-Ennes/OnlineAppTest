@@ -51,9 +51,9 @@ public class Dealer : IDealer
   public void FindAWinner(List<Player> players)
   {
     int? highestScore = 0;
-    Player? winner = null;
+    List<Player> winners = [];
 
-    foreach (var player in players)
+    foreach (Player player in players)
     {
       player.hand = new(Table.cards, player.cards);
       Console.WriteLine(player);
@@ -62,17 +62,33 @@ public class Dealer : IDealer
       if (player.hand.Score > highestScore)
       {
         highestScore = player.hand.Score;
-        winner = player;
+        winners = [player];
+      }
+      else if (player.hand.Score == highestScore)
+      {
+        winners.Add(player);
       }
     }
-    if (winner != null)
+
+    Thread.Sleep(500);
+    Console.WriteLine("\n\n--------------------------\n");
+    Thread.Sleep(500);
+    if (winners.Count == 1)
     {
-      Thread.Sleep(500);
-      Console.WriteLine("\n\n--------------------------\n");
-      Thread.Sleep(500);
       Console.WriteLine($"     {Color.ColorizeString("W I N N E R", "red")}");
       Thread.Sleep(500);
-      Console.WriteLine($"{winner}");
+      Console.WriteLine($"{winners.First()}");
+    }
+    // sometimes more than 1 players have the strongest hand
+    else
+    {
+      Console.WriteLine($"     {Color.ColorizeString("W I N N E R S", "red")}");
+      Console.WriteLine($"     {Color.ColorizeString("- splitted pot hand -", "yellow")}");
+      Thread.Sleep(500);
+      foreach (Player winner in winners)
+      {
+        Console.WriteLine($"{winner}");
+      }
     }
   }
 }
