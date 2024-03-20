@@ -5,8 +5,8 @@ using TexasHoldem;
 public class HandTests
 {
   readonly List<Card> playerCards = [
-      new("Ace", "Diamonds"),
-      new("6", "Clubs")
+      new("Ace", "Clubs"),
+      new("9", "Diamonds")
   ];
 
   readonly List<Card> tableCards = [
@@ -21,6 +21,7 @@ public class HandTests
   public void ShouldBuildAStraightFlushHand()
   {
     List<Card> modifiedTableCards = [.. tableCards];
+    List<int> straightCardScores = [2, 3, 4, 5, 14];
     Hand hand;
     modifiedTableCards.RemoveAt(0);
     modifiedTableCards.Insert(0, new Card("2", "Clubs"));
@@ -38,7 +39,8 @@ public class HandTests
     foreach (var card in hand.Cards)
     {
       Assert.Equal("Clubs", card.Suit);
-      Assert.InRange(int.Parse(card.Rank), 2, 6);
+      Assert.True(hand.Cards.All(card => straightCardScores.Contains(card.Score)));
+      Assert.Contains(hand.Cards, card => card.Rank == "Ace");
     }
   }
   [Fact]
@@ -63,7 +65,7 @@ public class HandTests
     List<Card> modifiedTableCards = [.. tableCards];
     Hand hand;
     modifiedTableCards.RemoveAt(0);
-    modifiedTableCards.Insert(0, new Card("6", "Diamonds"));
+    modifiedTableCards.Insert(0, new Card("9", "Diamonds"));
     modifiedTableCards.RemoveAt(2);
     modifiedTableCards.Insert(2, new Card("Ace", "Diamonds"));
     hand = new(modifiedTableCards, playerCards);
@@ -97,7 +99,7 @@ public class HandTests
   {
     List<Card> modifiedTableCards = [.. tableCards];
     Hand hand;
-    List<int> straightCardScores = [2, 3, 4, 5, 6];
+    List<int> straightCardScores = [2, 3, 4, 5, 14];
     modifiedTableCards.RemoveAt(0);
     modifiedTableCards.Insert(0, new Card("2", "Clubs"));
     modifiedTableCards.RemoveAt(1);
@@ -115,9 +117,9 @@ public class HandTests
     List<Card> modifiedTableCards = [.. tableCards];
     Hand hand;
     modifiedTableCards.RemoveAt(0);
-    modifiedTableCards.Insert(0, new Card("6", "Clubs"));
+    modifiedTableCards.Insert(0, new Card("9", "Clubs"));
     modifiedTableCards.RemoveAt(1);
-    modifiedTableCards.Insert(1, new Card("6", "Spades"));
+    modifiedTableCards.Insert(1, new Card("9", "Spades"));
     hand = new(modifiedTableCards, playerCards);
 
     Assert.Equal("threeOfAKind", hand.type);
@@ -131,7 +133,7 @@ public class HandTests
     List<Card> modifiedTableCards = [.. tableCards];
     Hand hand;
     modifiedTableCards.RemoveAt(0);
-    modifiedTableCards.Insert(0, new Card("6", "Clubs"));
+    modifiedTableCards.Insert(0, new Card("9", "Clubs"));
     hand = new(modifiedTableCards, playerCards);
 
     Assert.Equal("twoPair", hand.type);
@@ -155,7 +157,7 @@ public class HandTests
     List<Card> modifiedPlayerCards = [.. playerCards];
     Hand hand;
     modifiedPlayerCards.RemoveAt(0);
-    modifiedPlayerCards.Insert(0, new Card("9", "Diamonds"));
+    modifiedPlayerCards.Insert(0, new Card("6", "Diamonds"));
     hand = new(tableCards, modifiedPlayerCards);
 
     Assert.Equal("highCard", hand.type);

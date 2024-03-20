@@ -12,12 +12,166 @@ public class Hand : IHand
 
     if (AllCards.Count != 7)
       throw new InvalidOperationException(
-        "Two player cards and 5 table cards is needed to initialize a hand."
+        "Two player cards and five table cards is needed to initialize a hand."
     );
 
     type = HandIdentifier.IdentifyPlayerHand(tableCards, playerCards);
     BuildHand();
     DefineScore();
+  }
+
+  public void BuildHighCardHand()
+  {
+    List<Card> subArray = [];
+    List<Card> allCardsCopy = [.. AllCards];
+    allCardsCopy.Sort((card1, card2) => card2.Score.CompareTo(card1.Score));
+    Cards = allCardsCopy.GetRange(0, 5);
+    Cards.Reverse();
+  }
+
+  public void BuildPairHand(IEnumerable<IGrouping<string, Card>> groupedByRankCards)
+  {
+    List<Card> pairCards =
+       [.. groupedByRankCards.Where(group => group.Count() == 2).ToList()[0]];
+    List<Card> otherCards =
+      AllCards.Where(card => card.Rank != pairCards[0].Rank).ToList();
+    otherCards.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
+
+    Cards = pairCards;
+    Cards.Add(otherCards[^1]);
+    Cards.Add(otherCards[^2]);
+    Cards.Add(otherCards[^3]);
+  }
+
+  public void BuildTwoPairHand(IEnumerable<IGrouping<string, Card>> groupedByRankCards)
+  {
+    List<Card> firstPair = [.. groupedByRankCards.Where(group => group.Count() == 2).ToList()[0]];
+    List<Card> secondPair = [.. groupedByRankCards.Where(group => group.Count() == 2).ToList()[1]];
+    List<Card> twoPairCards =
+      firstPair[0].Score < secondPair[0].Score ?
+        [.. secondPair, .. firstPair] :
+        [.. firstPair, .. secondPair];
+
+    List<Card> otherCards =
+      AllCards.Where(
+        card =>
+          card.Rank != twoPairCards[0].Rank && card.Rank != twoPairCards[2].Rank
+      ).ToList();
+    Card? highestCardOfOtherCards =
+      otherCards.OrderByDescending(card => card.Score).FirstOrDefault();
+
+    Cards = twoPairCards;
+    if (highestCardOfOtherCards != null)
+      twoPairCards.Add(highestCardOfOtherCards);
+  }
+
+  public void BuildThreeOfAKindHand(IEnumerable<IGrouping<string, Card>> groupedByRankCards)
+  {
+    List<Card> threeOfAKind =
+        [.. groupedByRankCards.Where(group => group.Count() == 3).ToList()[0]];
+    List<Card> otherCards =
+      AllCards.Where(card => card.Rank != threeOfAKind[0].Rank).ToList();
+    otherCards.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
+
+    Cards = threeOfAKind;
+    Cards.Add(otherCards[^1]);
+    Cards.Add(otherCards[^2]);
+  }
+
+  public void BuildStraightHand()
+  {
+    AllCards.Sort((card1, card2) => card2.Score.CompareTo(card1.Score));
+    List<Card> straight = [];
+    foreach (Card card in AllCards)
+    {
+      int index = AllCards.IndexOf(card);
+      // cards sorted, more easy
+      // if no cards in straight I add one
+      if (straight.Count == 0)
+      {
+        straight.Add(card);
+        continue;
+      }
+      // and see if the next card has the score plus 1 or minus 1(sorted)
+      if (card.Score == straight[0].Score + 1)
+        straight.Insert(0, card);
+      else if (card.Score == straight[^1].Score - 1)
+        straight.Add(card);
+      // if no connection made, I change only card on array
+      if (straight.Count == 1)
+        straight = [card];
+    }
+
+    if (straight.Count == 4 && straight[0].Score == 5 && AllCards.Any(card => card.Rank == "Ace"))
+    {
+      Card? ace = AllCards.Find(card => card.Rank == "Ace");
+      if (ace != null)
+        straight.Insert(0, ace);
+    }
+    Cards = straight;
+  }
+
+  public void BuildFlushHand(IEnumerable<IGrouping<string, Card>> groupedBySuitCards)
+  {
+    Cards =
+     [.. groupedBySuitCards.Where(group => group.Count() == 5).ToList()[0]];
+  }
+
+  public void BuildFullHouseHand(IEnumerable<IGrouping<string, Card>> groupedByRankCards)
+  {
+    List<Card> threeEqualCards =
+        [.. groupedByRankCards.Where(group => group.Count() == 3).ToList()[0]];
+    List<Card> pairCards =
+      [.. groupedByRankCards.Where(group => group.Count() == 2).ToList()[0]];
+    Cards = [.. threeEqualCards, .. pairCards];
+  }
+
+  public void BuildFourOfAKindHand(IEnumerable<IGrouping<string, Card>> groupedByRankCards)
+  {
+    List<Card> fourOfAKindCards =
+       [.. groupedByRankCards.Where(group => group.Count() == 4).ToList()[0]];
+    List<Card> otherCards = AllCards.Where(card => card.Rank != fourOfAKindCards[0].Rank).ToList();
+    Card? highestCardOfOtherCards =
+      otherCards.OrderByDescending(card => card.Score).FirstOrDefault();
+
+    Cards = fourOfAKindCards;
+    if (highestCardOfOtherCards != null)
+    {
+      Cards.Add(highestCardOfOtherCards);
+    }
+  }
+
+  public void BuildStraightFlushHand()
+  {
+    AllCards.Sort((card1, card2) => card2.Score.CompareTo(card1.Score));
+    List<Card> straightFlush = [];
+    foreach (Card card in AllCards)
+    {
+      int index = AllCards.IndexOf(card);
+      // cards sorted, more easy
+      // if no cards in straight I add one
+      if (straightFlush.Count == 0)
+      {
+        straightFlush.Add(card);
+        continue;
+      }
+      // and see if the next card has the score plus 1 or minus 1(sorted)
+      if (card.Score == straightFlush[0].Score + 1 && card.Suit == straightFlush[0].Suit)
+        straightFlush.Insert(0, card);
+      else if (card.Score == straightFlush[^1].Score - 1 && card.Suit == straightFlush[^1].Suit)
+        straightFlush.Add(card);
+      // if no connection made, I change only card on array
+      if (straightFlush.Count == 1)
+        straightFlush = [card];
+    }
+
+    if (straightFlush.Count == 4 && straightFlush[0].Score == 5 && AllCards.Any(card => card.Rank == "Ace"))
+    {
+      Card? ace = AllCards.Find(card => card.Rank == "Ace" && card.Suit == straightFlush[0].Suit);
+      if (ace != null)
+        straightFlush.Insert(0, ace);
+    }
+    Cards = straightFlush;
   }
 
   public void BuildHand()
@@ -29,138 +183,53 @@ public class Hand : IHand
     //straightFlush
     if (
       HandIdentifier.IsStraight(groupedByScoreCards)
-      && groupedBySuitCards.Any(group => group.Count() == 5)
+      && groupedBySuitCards.Any(group => group.Count() >= 5)
     )
-    {
-      Cards = [.. groupedBySuitCards.Where(group => group.Count() == 5).ToList()[0]];
-    }
+      BuildStraightFlushHand();
     //fourOfAKind
     else if (groupedByRankCards.Any(group => group.Count() == 4))
-    {
-      List<Card> fourOfAKindCards =
-        [.. groupedByRankCards.Where(group => group.Count() == 4).ToList()[0]];
-      List<Card> otherCards =
-        AllCards.Where(card => card.Rank != fourOfAKindCards[0].Rank).ToList();
-      Card? highestCardOfOtherCards =
-        otherCards.OrderByDescending(card => card.Score).FirstOrDefault();
-
-      Cards = fourOfAKindCards;
-      if (highestCardOfOtherCards != null)
-      {
-        Cards.Add(highestCardOfOtherCards);
-      }
-    }
+      BuildFourOfAKindHand(groupedByRankCards);
     //fullHouse
     else if (
       groupedByRankCards.Any(group => group.Count() == 3)
       && groupedByRankCards.Any(group => group.Count() == 2)
     )
-    {
-      List<Card> threeEqualCards =
-        [.. groupedByRankCards.Where(group => group.Count() == 3).ToList()[0]];
-      List<Card> pairCards =
-        [.. groupedByRankCards.Where(group => group.Count() == 2).ToList()[0]];
-      Cards = [.. threeEqualCards, .. pairCards];
-    }
+      BuildFullHouseHand(groupedByRankCards);
     //flush
     else if (
       groupedBySuitCards.Any(group => group.Count() == 5)
     )
-    {
-      Cards =
-       [.. groupedBySuitCards.Where(group => group.Count() == 5).ToList()[0]];
-    }
+      BuildFlushHand(groupedBySuitCards);
     // straight
     else if (
       HandIdentifier.IsStraight(groupedByScoreCards)
     )
-    {
-      AllCards.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
-      for (int i = 0; i <= AllCards.Count - 5; i++)
-      {
-        if (
-          AllCards[i].Score == AllCards[i + 1].Score - 1 &&
-          AllCards[i].Score == AllCards[i + 2].Score - 2 &&
-          AllCards[i].Score == AllCards[i + 3].Score - 3 &&
-          (AllCards[i].Score == AllCards[i + 4].Score - 4
-            || AllCards[i].Score == AllCards[i + 4].Score + 10)
-        )
-        {
-          Cards = AllCards.GetRange(i, 5);
-        }
-      }
-    }
+      BuildStraightHand();
     //threeOfAKind
     else if (
       groupedByRankCards.Any(group => group.Count() == 3)
     )
-    {
-      List<Card> threeOfAKind =
-        [.. groupedByRankCards.Where(group => group.Count() == 3).ToList()[0]];
-      List<Card> otherCards =
-        AllCards.Where(card => card.Rank != threeOfAKind[0].Rank).ToList();
-      otherCards.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
-
-      Cards = threeOfAKind;
-      Cards.Add(otherCards[^1]);
-      Cards.Add(otherCards[^2]);
-    }
+      BuildThreeOfAKindHand(groupedByRankCards);
     //two pair
     else if (
       groupedByRankCards.Count(group => group.Count() == 2) >= 2
     )
-    {
-      List<Card> twoPairCards =
-        [
-          .. groupedByRankCards.Where(group => group.Count() == 2).ToList()[0],
-          .. groupedByRankCards.Where(group => group.Count() == 2).ToList()[1],
-        ];
-      List<Card> otherCards =
-        AllCards.Where(
-          card =>
-            card.Rank != twoPairCards[0].Rank && card.Rank != twoPairCards[2].Rank
-        ).ToList();
-      Card? highestCardOfOtherCards =
-        otherCards.OrderByDescending(card => card.Score).FirstOrDefault();
-
-      Cards = twoPairCards;
-      if (highestCardOfOtherCards != null)
-        twoPairCards.Add(highestCardOfOtherCards);
-    }
+      BuildTwoPairHand(groupedByRankCards);
     // pair
     else if (
       groupedByRankCards.Any(group => group.Count() == 2)
     )
-    {
-      List<Card> pairCards =
-       [.. groupedByRankCards.Where(group => group.Count() == 2).ToList()[0]];
-      List<Card> otherCards =
-        AllCards.Where(card => card.Rank != pairCards[0].Rank).ToList();
-      otherCards.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
-
-      Cards = pairCards;
-      Cards.Add(otherCards[^1]);
-      Cards.Add(otherCards[^2]);
-      Cards.Add(otherCards[^3]);
-    }
+      BuildPairHand(groupedByRankCards);
     // highestCard
     else
-    {
-      List<Card> subArray = [];
-      List<Card> allCardsCopy = [.. AllCards];
-      allCardsCopy.Sort((card1, card2) => card1.Score.CompareTo(card2.Score));
-      Cards = allCardsCopy.GetRange(2, 5);
-      Cards.Reverse();
-    }
+      BuildHighCardHand();
   }
 
   public void DefineScore()
   {
     if (type != null)
     {
-      int gameTypeValue = Pontuation.HAND_ADDER[type];
-      int sumOfCards = Cards.Aggregate(0, (sum, card) => sum + card.Score);
-      Score = gameTypeValue + sumOfCards;
+      Score = Pontuation.CalculatePontuation(this);
     }
   }
 

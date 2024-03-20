@@ -1,34 +1,38 @@
 namespace TexasHoldem;
 
-public class HandIdentifier:IHandIdentifier
+public class HandIdentifier : IHandIdentifier
 {
+  public static bool IsLowestStraight(Hand hand)
+  {
+    hand.Cards.Sort((c1, c2) => c2.Score.CompareTo(c1.Score));
+    return (hand.type == "straight" || hand.type == "straightFlush")
+      && hand.Cards[1].Rank == "5"
+      && hand.Cards[4].Rank == "2";
+  }
   public static bool IsStraight(IEnumerable<IGrouping<int, Card>> scoreGroupedCards)
   {
     List<int> scoreList = scoreGroupedCards
       .Select(cards => cards.ToList()[0].Score)
       .ToList();
-    scoreList.Sort();
-    // when comparing an element to the previous one
-    // the previous has to be 1 unit less than the actual
-    // for consecutive times
-    int straightMatches = 0;
-
-    if (scoreList.Count < 5) return false;
-    foreach (var score in scoreList)
+    // Convert 14 to 1 if present in the list, Ace low straight
+    for (int i = 0; i < scoreList.Count; i++)
     {
-      int scoreIndex = scoreList.IndexOf(score);
-      if (scoreIndex == 0) continue;
-      if (straightMatches == 4) return true;
-      if (
-        scoreList[scoreIndex - 1] != score - 1
-        // smallest straight with Ace
-        || scoreIndex == 1 && score == 2 && scoreList[scoreIndex - 1] != 14
-      )
-        return false;
-
-      straightMatches += 1;
+      if (scoreList[i] == 14)
+        scoreList.Add(1);
     }
-    return true;
+    scoreList.Sort();
+    // Check for 5 consecutive values
+    for (int i = 0; i <= scoreList.Count - 5; i++)
+    {
+      if (scoreList[i] == scoreList[i + 1] - 1 &&
+          scoreList[i + 1] == scoreList[i + 2] - 1 &&
+          scoreList[i + 2] == scoreList[i + 3] - 1 &&
+          scoreList[i + 3] == scoreList[i + 4] - 1)
+      {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static string IdentifyPlayerHand(List<Card> tableCards, List<Card> playerCards)

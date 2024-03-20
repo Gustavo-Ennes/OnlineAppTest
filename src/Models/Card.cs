@@ -71,7 +71,7 @@ public class Card : ICard
 
   override public string ToString()
   {
-    return $"{Rank[0]}{GetColoredSuit(Suit)} ~ ({Score})";
+    return $"{(Rank != "10" ? Rank[0] : Rank)}{GetColoredSuit(Suit)} ~ ({Score})";
   }
 }
 

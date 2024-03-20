@@ -14,7 +14,7 @@ public class Dealer : IDealer
 
   public void DistributeACardTo(Player player)
   {
-    Console.WriteLine($"distributin one card to {player.Name}.");
+    Console.WriteLine($"distributing one card to {player.Name}.");
     Thread.Sleep(500);
     List<Card> dealedCards = Deck.DealCards();
     player.ReceiveCard(dealedCards[0]);
