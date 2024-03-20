@@ -104,7 +104,7 @@ public class Pontuation : IPontuation
 
     if (pairKindCard != null)
       return otherCardExceptPair.Aggregate(
-        HAND_ADDER["pair"] +( pairKindCard.Score * multiplier * 3),
+        HAND_ADDER["pair"] + (pairKindCard.Score * multiplier * 3),
         (sum, otherCard) =>
         {
           sum += otherCard.Score * multiplier;
