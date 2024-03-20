@@ -18,7 +18,12 @@ public class Game : IGame
     Deck deck = new();
     Table table = new();
     Dealer dealer = new(deck, table);
-    List<Player> players = Enumerable.Range(0, 5).Select(i => new Player(playerNames[i])).ToList();
+    // Polymorphism
+    List<Player> players =
+      [
+        new RealPlayer(playerNames[0]),
+        .. Enumerable.Range(1, 4).Select(i => new FakePlayer(playerNames[i])).ToList()
+      ];
 
     Console.WriteLine(Color.ColorizeString("Introducing the players...", "cyan"));
     Thread.Sleep(500);
