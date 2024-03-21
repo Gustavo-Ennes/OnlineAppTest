@@ -4,6 +4,8 @@ namespace TexasHoldem;
 public class Game : IGame
 {
   private static Game? instance;
+  public List<Player> LastWinners { get; set; } = [];
+  public int LastScore { get; set; } = 0;
 
   private Game() { }
 
@@ -82,8 +84,50 @@ public class Game : IGame
     Thread.Sleep(500);
   }
 
+  public void DisplayWinners()
+  {
+    Thread.Sleep(500);
+    string str = "\n\n--------------------------\n";
+    Thread.Sleep(500);
+    if (LastWinners.Count == 1)
+    {
+      str += $"     {Color.ColorizeString("W I N N E R", "red")}";
+      Thread.Sleep(500);
+      str += $"{LastWinners.First()}";
+    }
+    // sometimes more than 1 players have the strongest hand
+    else
+    {
+      str += $"     {Color.ColorizeString("W I N N E R S", "red")}";
+      str += $" {Color.ColorizeString("- splitted pot hand -", "yellow")}";
+      Thread.Sleep(500);
+      foreach (Player winner in LastWinners)
+      {
+        str += $"{winner}";
+      }
+      str += $" {Color.ColorizeString("- splitted pot hand -", "yellow")}";
+    }
+
+    Console.WriteLine(str);
+  }
+
   public void FinishGame(Dealer dealer, List<Player> players)
   {
-    dealer.FindAWinner(players);
+    List<Player> winners = dealer.FindTheWinners(players);
+
+    // give real player score point to sum
+    foreach (Player winner in winners)
+    {
+      if (winner is RealPlayer realWinner)
+        realWinner.Score += realWinner.hand?.Score ?? 0;
+    }
+    // add instance last game info
+    if (instance != null)
+    {
+      instance.LastScore = winners.First().hand?.Score ?? 0;
+      instance.LastWinners = winners;
+    }
+
+    DisplayWinners();
   }
 }

@@ -7,5 +7,5 @@ public interface IDealer{
   public List<Card> GetCardsFromDeck(int quantity);
   public void BurnACard();
   public void LogPlayerGame(Player player);
-  public void FindAWinner(List<Player> players);
+  public List<Player> FindTheWinners(List<Player> players);
 }

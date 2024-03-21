@@ -6,6 +6,7 @@ public interface IGame
   void Execute(List<string> playerNames);
   void IntroducePlayers(List<string> playerNames);
   void DistributeCardsToPlayers(Dealer dealer, List<Player> players);
-  void DistributeCardsOnTable(Dealer dealer, Table table);  
+  void DistributeCardsOnTable(Dealer dealer, Table table);
   void FinishGame(Dealer dealer, List<Player> players);
+  void DisplayWinners();
 }
