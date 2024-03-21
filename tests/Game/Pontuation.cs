@@ -1,3 +1,4 @@
+#pragma warning disable CS0436 // Type conflicts with imported type
 namespace TexasHoldemTests;
 
 using TexasHoldem;
