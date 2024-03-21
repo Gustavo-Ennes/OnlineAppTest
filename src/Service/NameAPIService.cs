@@ -27,13 +27,21 @@ public class NameAPIService(HttpClient client)
     return playerNameElement.ToString();
   }
 
-  public async Task<List<string>> GetPlayerNames()
+  public async Task<List<string>> GetPlayerNames(int modalityNumber)
   {
+    int numberOfPlayers = modalityNumber switch
+    {
+      1 => 1,
+      2 => 5,
+      3 => 8,
+      _ => 5
+    };
     List<string> names = [];
+
     do
     {
       names.Add(await GetPlayerName());
-    }while (names.Count < 5);
+    } while (names.Count < numberOfPlayers);
     return names;
   }
 

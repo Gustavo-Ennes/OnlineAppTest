@@ -1,6 +1,6 @@
 # **Programming test**
 
-## Texas Hold'em 6-Max all-in app!
+## Texas Hold'em all-in app!
 
 
 ![](https://i.gifer.com/8qIJ.gif)
@@ -31,8 +31,8 @@ The test expect the correct application of the Texas hold'em hand ranking alogsi
 
 ## Application flow
 
-When application starts, a prompt asks for a player name. The other five names (6-max) the app gets calling [some fake name api](https://api.namefake.com/). The players and the dealer are instantiated and the players start to receive their cards, one card to each one, just like a texas hold'em card distribution. Right after this, the flop, turn and river are placed in the table. The Hand and Pontuation classes are called with seven cards to each player(2 from player and 5 from the table) and they should return the best game that can be made with just 5 of the 7 cards, following the [Texas Hold'em hand ranking](https://upswingpoker.com/poker-hands-rankings/).
-In the hand with the highest score among the 6 players is shown.
+When application starts, a prompt asks for a player name, and then for a game modality: heads-up(two players), 6-max(6 players) and full-ring(9 players). The other one, five or eight names the app gets calling [some fake name api](https://api.namefake.com/). The players and the dealer are instantiated and the players start to receive their cards, one card to each one, just like a texas hold'em card distribution. Right after this, the flop, turn and river are placed in the table. The Hand and Pontuation classes are called with seven cards to each player(2 from player and 5 from the table) and they should return the best game that can be made with just 5 of the 7 cards, following the [Texas Hold'em hand ranking](https://upswingpoker.com/poker-hands-rankings/).
+In the hand with the highest score among the players is shown.
 
 ## Technologies
 The project was built in `C#`(calm down, this was my first touch at this language) and `.NET` version 8.0, in addition to using `Moq` and `Xunit` libs to test.

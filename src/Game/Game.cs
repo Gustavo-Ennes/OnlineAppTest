@@ -24,11 +24,13 @@ public class Game : IGame
     deck = new();
     dealer = new(deck, table);
     // Polymorphism
-    List<Player> players =
-      [
-        new RealPlayer(playerNames[0]),
-        .. Enumerable.Range(1, 4).Select(i => new FakePlayer(playerNames[i])).ToList()
-      ];
+    List<Player> players = [ new RealPlayer(playerNames[0])];
+    List<string> fakePlayerNames = playerNames.GetRange(1, playerNames.Count - 1);
+    
+    foreach(string name in fakePlayerNames)
+    {
+      players.Add( new FakePlayer(name));
+    }
 
     Console.WriteLine(Color.ColorizeString("Introducing the players...", "cyan"));
     Thread.Sleep(200);
