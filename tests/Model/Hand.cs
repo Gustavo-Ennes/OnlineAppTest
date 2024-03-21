@@ -43,6 +43,25 @@ public class HandTests
       Assert.Contains(hand.Cards, card => card.Rank == "Ace");
     }
   }
+  // bug found, fixed
+  [Fact]
+  public void ShouldBuildTheProblematicStraightFlushHand()
+  {
+    List<Card> modifiedTableCards = HandHelper.GetCardsByNotation(
+      HandHelper.SeparateCardsNotations("8h4dAd3d7h")
+    );
+    Hand hand;
+    List<Card> playerCards = HandHelper.GetCardsByNotation(
+      HandHelper.SeparateCardsNotations("5d2d")
+    );
+    List<int> straightCardScores = [2, 3, 4, 5, 14];
+    hand = new(modifiedTableCards, playerCards);
+
+    Assert.Equal("straightFlush", hand.type);
+    Assert.NotNull(hand.Score);
+    Assert.Equal(5, hand.Cards.Count);
+    Assert.True(hand.Cards.All(card => straightCardScores.Contains(card.Score)));
+  }
   [Fact]
   public void ShouldBuildAFourOfAKindHand()
   {
@@ -104,6 +123,25 @@ public class HandTests
     modifiedTableCards.Insert(0, new Card("2", "Clubs"));
     modifiedTableCards.RemoveAt(1);
     modifiedTableCards.Insert(1, new Card("4", "Spades"));
+    hand = new(modifiedTableCards, playerCards);
+
+    Assert.Equal("straight", hand.type);
+    Assert.NotNull(hand.Score);
+    Assert.Equal(5, hand.Cards.Count);
+    Assert.True(hand.Cards.All(card => straightCardScores.Contains(card.Score)));
+  }
+  // bug found, fixed
+  [Fact]
+  public void ShouldBuildTheProblematicStraightHand()
+  {
+    List<Card> modifiedTableCards = HandHelper.GetCardsByNotation(
+      HandHelper.SeparateCardsNotations("8h4dAs3s7h")
+    );
+    Hand hand;
+    List<Card> playerCards = HandHelper.GetCardsByNotation(
+      HandHelper.SeparateCardsNotations("5c2h")
+    );
+    List<int> straightCardScores = [2, 3, 4, 5, 14];
     hand = new(modifiedTableCards, playerCards);
 
     Assert.Equal("straight", hand.type);

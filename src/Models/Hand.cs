@@ -97,9 +97,12 @@ public class Hand : IHand
         straight.Insert(0, card);
       else if (card.Score == straight[^1].Score - 1)
         straight.Add(card);
-      // if no connection made, I change only card on array
-      if (straight.Count == 1)
+      // if no connection made and no straight formed, reset straight array
+      else if(straight.Count < 5)
         straight = [card];
+      // if straight formed, exit loop
+      else if(straight.Count >= 5)
+        break;
     }
 
     if (straight.Count == 4 && straight[0].Score == 5 && AllCards.Any(card => card.Rank == "Ace"))
@@ -160,9 +163,12 @@ public class Hand : IHand
         straightFlush.Insert(0, card);
       else if (card.Score == straightFlush[^1].Score - 1 && card.Suit == straightFlush[^1].Suit)
         straightFlush.Add(card);
-      // if no connection made, I change only card on array
-      if (straightFlush.Count == 1)
+      // if no connection made and no straight formed, reset straight array
+      else if (straightFlush.Count < 5)
         straightFlush = [card];
+      // if straight formed, exit loop
+      else if (straightFlush.Count >= 5)
+        break;
     }
 
     if (straightFlush.Count == 4 && straightFlush[0].Score == 5 && AllCards.Any(card => card.Rank == "Ace"))
