@@ -118,7 +118,15 @@ public class Pontuation : IPontuation
   public static int CalculateStraight(Hand hand)
   {
     hand.Cards.Sort((card1, card2) => card2.Score.CompareTo(card1.Score));
-    return HAND_ADDER["straight"] + hand.Cards[0].Score;
+    // If lowest straight starting with Ace, Ace isn't the highest card, it's 5
+    static bool IsLowestStraight(List<Card> handCards)
+    {
+      return handCards.Any(card => card.Score == 2) && handCards.Any(card => card.Score == 14);
+    }
+
+    return IsLowestStraight(hand.Cards)
+      ? HAND_ADDER["straight"] + hand.Cards[1].Score
+      : HAND_ADDER["straight"] + hand.Cards[0].Score;
   }
 
   public static int CalculateStraightFlush(Hand hand)
