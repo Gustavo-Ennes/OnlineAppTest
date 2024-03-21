@@ -7,8 +7,7 @@ public class RealPlayer(string name) : Player(name)
   {
     string str = $"\n\n----- {Color.ColorizeString("Y O U", "cyan")} ------";
     str += $"\nScore until now: {Score}\n";
-    str += "\nPocket cards:\n";
-    str += $"\n -> {cards[0]}\n -> {cards[1]}";
+    str += $"\nPocket cards: {cards[0]} {cards[1]}";
     str += $"\n\n{hand}";
 
     return str;

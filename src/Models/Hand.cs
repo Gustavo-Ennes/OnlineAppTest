@@ -241,13 +241,14 @@ public class Hand : IHand
 
   public override string ToString()
   {
-    string str = $"\nType: {Color.ColorizeString(type ?? "", "cyan")}\nMade hand:\n";
+    string str = $"\nType: {Color.ColorizeString(type ?? "", "cyan")}";
+    str += "\nMade hand: ";
     foreach (var card in Cards)
     {
-      str += $"\n -> {card}";
+      str += $"{card} ";
     }
-    str += $"\n\t>{Color.ColorizeString("Score", "red")}: {Score}";
-    str += $"\n\n----------------------\n";
+    str += $"\n{Color.ColorizeString("Score", "red")}: {Score}";
+    str += $"\n\n-------------------------------------\n";
     return str;
   }
 }

@@ -15,7 +15,7 @@ public class Table
       cards.Add(flopCard);
     }
     Console.WriteLine("Table received the flop.");
-    Thread.Sleep(500);
+    Thread.Sleep(200);
   }
 
   public void ReceiveTurn(Card turnCard)
@@ -26,7 +26,7 @@ public class Table
     }
     cards.Add(turnCard);
     Console.WriteLine("Table received the turn.");
-    Thread.Sleep(500);
+    Thread.Sleep(200);
   }
 
   public void ReceiveRiver(Card riverCard)
@@ -37,22 +37,17 @@ public class Table
     }
     cards.Add(riverCard);
     Console.WriteLine("Table received the river.");
-    Thread.Sleep(500);
+    Thread.Sleep(200);
   }
 
-  public void ListTableCards()
+  public override string ToString()
   {
-    string message = $"\n\n---- {Color.ColorizeString("table cards", "cyan")} ----";
-    if (cards.Count == 0) message += "No cards in the table.";
-    if (cards.Count > 2)
-      message += $"\n\n{Color.ColorizeString("Flop", "yellow")}:\n -> {cards[0]}\n -> {cards[1]}\n -> {cards[2]}";
-    if (cards.Count > 3)
-      message = string.Concat(message, $"\n\n{Color.ColorizeString("Turn", "yellow")}:\n -> {cards[3]}");
-    if (cards.Count > 4) message = 
-      string.Concat(message, $"\n\n{Color.ColorizeString("River", "yellow")}:\n -> {cards[4]}");
-
-    message += "\n___________________\n\n";
-
-    Console.WriteLine(message);
+    string str = "[ ";
+    foreach(Card card in cards.GetRange(0,3))
+    {
+      str += $" {card}";
+    }
+    str += $" ]  [ {cards[3]} ]  [ {cards[4]} ]\n";
+    return str;
   }
 }

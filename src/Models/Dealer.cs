@@ -15,7 +15,7 @@ public class Dealer : IDealer
   public void DistributeACardTo(Player player)
   {
     Console.WriteLine($"distributing one card to {player.Name}.");
-    Thread.Sleep(500);
+    Thread.Sleep(200);
     List<Card> dealedCards = Deck.DealCards();
     player.ReceiveCard(dealedCards[0]);
   }
@@ -29,7 +29,7 @@ public class Dealer : IDealer
   {
     Deck.DealCards();
     Console.WriteLine($"Dealer {Color.ColorizeString("burned", "red")} a card.");
-    Thread.Sleep(500);
+    Thread.Sleep(200);
   }
 
   public void LogPlayerGame(Player player)
@@ -45,7 +45,7 @@ public class Dealer : IDealer
     Console.WriteLine(
       $"Player hand type: {HandIdentifier.IdentifyPlayerHand(Table.cards, player.cards)}"
     );
-    Thread.Sleep(500);
+    Thread.Sleep(200);
   }
 
   public List<Player> FindTheWinners(List<Player> players)
@@ -57,7 +57,7 @@ public class Dealer : IDealer
     {
       player.hand = new(Table.cards, player.cards);
       Console.WriteLine(player);
-      Thread.Sleep(500);
+      Thread.Sleep(200);
 
       if (player.hand.Score > highestScore)
       {
@@ -69,7 +69,7 @@ public class Dealer : IDealer
         winners.Add(player);
       }
     }
-    
+
     return winners;
   }
 }

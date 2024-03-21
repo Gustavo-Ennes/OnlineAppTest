@@ -5,8 +5,7 @@ public class FakePlayer(string name) : Player(name)
   override public string ToString()
   {
     string str = $"\n\n----- {Color.ColorizeString(Name, "cyan")} ------";
-    str += "\nPocket cards:\n";
-    str += $"\n -> {cards[0]}\n -> {cards[1]}";
+    str += $"\nPocket cards: {cards[0]} {cards[1]}";
     str += $"\n\n{hand}";
 
     return str;

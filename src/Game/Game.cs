@@ -6,6 +6,9 @@ public class Game : IGame
   private static Game? instance;
   public List<Player> LastWinners { get; set; } = [];
   public int LastScore { get; set; } = 0;
+  private Table? table;
+  private Deck? deck;
+  private Dealer? dealer;
 
   private Game() { }
 
@@ -17,9 +20,9 @@ public class Game : IGame
 
   public void Execute(List<string> playerNames)
   {
-    Deck deck = new();
-    Table table = new();
-    Dealer dealer = new(deck, table);
+    table = new();
+    deck = new();
+    dealer = new(deck, table);
     // Polymorphism
     List<Player> players =
       [
@@ -28,15 +31,15 @@ public class Game : IGame
       ];
 
     Console.WriteLine(Color.ColorizeString("Introducing the players...", "cyan"));
-    Thread.Sleep(500);
+    Thread.Sleep(200);
     IntroducePlayers(playerNames);
-    Thread.Sleep(500);
+    Thread.Sleep(200);
     Console.WriteLine(Color.ColorizeString("Distributing cards to players...", "cyan"));
     DistributeCardsToPlayers(dealer, players);
-    Thread.Sleep(500);
-    Console.WriteLine(Color.ColorizeString("Putting cards on the table...", "cyan"));
+    Thread.Sleep(200);
+    Console.WriteLine(Color.ColorizeString("\nPutting cards on the table...", "cyan"));
     DistributeCardsOnTable(dealer, table);
-    Thread.Sleep(500);
+    Thread.Sleep(200);
     Console.WriteLine(Color.ColorizeString("finishing the game...", "cyan"));
     FinishGame(dealer, players);
   }
@@ -48,7 +51,7 @@ public class Game : IGame
     {
       str += $"\n-> {Color.ColorizeString(playerName, "yellow")}";
     }
-    str += "\n\n--------------------------";
+    str += "\n\n--------------------------\n";
 
     Console.WriteLine(str);
   }
@@ -80,34 +83,34 @@ public class Game : IGame
     //river
     dealer.BurnACard();
     table.ReceiveRiver(dealer.GetCardsFromDeck(1)[0]);
-    table.ListTableCards();
-    Thread.Sleep(500);
+    Console.WriteLine($"\n\nTable Cards: {table}");
+    Thread.Sleep(200);
   }
 
   public void DisplayWinners()
   {
-    Thread.Sleep(500);
-    string str = "\n\n--------------------------\n";
-    Thread.Sleep(500);
+    Thread.Sleep(200);
+    string str = $"\n\n\n\n{Color.ColorizeString("-------------------------------------", "blue")}\n";
+    Thread.Sleep(200);
     if (LastWinners.Count == 1)
     {
       str += $"     {Color.ColorizeString("W I N N E R", "red")}";
-      Thread.Sleep(500);
+      Thread.Sleep(200);
       str += $"{LastWinners.First()}";
     }
     // sometimes more than 1 players have the strongest hand
     else
     {
       str += $"     {Color.ColorizeString("W I N N E R S", "red")}";
-      str += $" {Color.ColorizeString("- splitted pot hand -", "yellow")}";
-      Thread.Sleep(500);
+      str += $" {Color.ColorizeString("\n   - splitted pot hand -", "yellow")}";
+      Thread.Sleep(200);
       foreach (Player winner in LastWinners)
       {
         str += $"{winner}";
       }
-      str += $" {Color.ColorizeString("- splitted pot hand -", "yellow")}";
     }
-
+    str += $"\nTable Cards: {table}";
+    str += $"{Color.ColorizeString("-------------------------------------", "blue")}";
     Console.WriteLine(str);
   }
 
