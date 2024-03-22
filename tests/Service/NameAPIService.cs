@@ -1,5 +1,6 @@
 namespace TexasHoldemTests;
 
+using System.Net;
 using Moq;
 using TexasHoldem;
 
@@ -12,13 +13,27 @@ public class NameAPIServiceTests
   [Fact]
   public async void ShouldGetThePlayerName()
   {
-    // Arrange
-    var mockAPIService = new Mock<INameAPIService>();
-    mockAPIService
-      .Setup(service => service.GetPlayerName())
-      .ReturnsAsync("MockPlayer");
+    var mockHttpClient = new Mock<IHttpClientWrapper>();
+    mockHttpClient
+      .Setup(x => x.GetAsync(It.IsAny<string>()))
+      .ReturnsAsync(
+        new HttpResponseMessage(HttpStatusCode.OK)
+        {
+          Content = new StringContent("{\"name\": \"John\"}")
+        });
 
-    string playerName = await mockAPIService.Object.GetPlayerName();
-    Assert.Equal("MockPlayer", playerName);
+    var nameServiceApi = new NameAPIService(mockHttpClient.Object);
+
+    // Act
+    string name = await nameServiceApi.GetPlayerName();
+    List<string> headsUpNames = await nameServiceApi.GetPlayerNames(1); //modality 1: Heads-up
+    List<string> sixMaxNames = await nameServiceApi.GetPlayerNames(2); //modality 2: 6-max
+    List<string> fullRingNames = await nameServiceApi.GetPlayerNames(3); //modality 3: full-ring
+
+    // Assert
+    Assert.Equal("John", name);
+    Assert.Single(headsUpNames); // 2 players - 1 realPlayer
+    Assert.Equal(5, sixMaxNames.Count); // 6 players - 1 realPlayer, etc..
+    Assert.Equal(8, fullRingNames.Count);
   }
 }

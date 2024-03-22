@@ -2,7 +2,7 @@
 
 class Program
 {
-    private static readonly HttpClient httpClient = new();
+    private static readonly IHttpClientWrapper httpClient = new HttpClientWrapper(new HttpClient());
     private static NameAPIService? NameAPIService;
     static async Task Main(string[] args)
     {

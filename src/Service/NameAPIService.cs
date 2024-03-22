@@ -1,12 +1,10 @@
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace TexasHoldem;
 
-public class NameAPIService(HttpClient client)
+public class NameAPIService(IHttpClientWrapper client)
 {
-  private readonly HttpClient Client = client;
+  private readonly IHttpClientWrapper Client = client;
   private static readonly string nameAPIUrl = "https://api.namefake.com/";
 
   public async Task<string> GetPlayerName()
